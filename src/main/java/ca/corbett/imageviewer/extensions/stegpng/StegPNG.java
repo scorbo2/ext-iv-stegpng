@@ -224,8 +224,13 @@ public final class StegPNG {
      *
      * @param candidateImage The container image to check.
      * @return The available storage space, in bytes, using the current data compaction level.
+     * @throws IllegalArgumentException if the given candidateImage is null.
      */
     public int getAvailableStorageSpace(BufferedImage candidateImage) {
+        if (candidateImage == null) {
+            throw new IllegalArgumentException("Candidate image cannot be null.");
+        }
+        
         // Pixels reserved for the header (always written at compaction level 1):
         int headerPixels = (int)Math.ceil(StegInfo.HEADER_SIZE * 8 / 3.0); // = 27
 
