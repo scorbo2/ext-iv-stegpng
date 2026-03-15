@@ -98,11 +98,10 @@ public final class StegPNG {
      * @param secretMessage  The message to embed, in String form.
      * @return A new BufferedImage containing the results.
      * @throws InsufficientSpaceException if the container lacks the space to hold the message.
-     * @throws IOException                on file read problem.
      * @throws IllegalArgumentException   if any parameter is null.
      */
     public BufferedImage embedSecretMessage(BufferedImage containerImage, String secretMessage)
-            throws InsufficientSpaceException, IOException {
+            throws InsufficientSpaceException {
         byte[] secretMessageData = convertStringToByteArray(secretMessage);
         return embedSecretMessage(containerImage, secretMessageData, PayloadType.STRING);
     }
