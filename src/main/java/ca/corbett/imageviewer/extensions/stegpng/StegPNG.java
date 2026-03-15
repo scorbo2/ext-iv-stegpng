@@ -28,7 +28,7 @@ import java.io.IOException;
  *     can effortlessly identify and extract the hidden payload
  *     from any StegPNG-encoded container image. Again, this
  *     is just an academic demonstration! StegPNG is not intended
- *     for serious use. No warrantee or guarantee of applicability
+ *     for serious use. No warranty or guarantee of applicability
  *     for any particular purpose is implied or expressly granted.
  * </p>
  *
