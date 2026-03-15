@@ -88,8 +88,8 @@ You see a small preview of the selected image, and a few options for embedding o
 
 If the selected image does not already contain a hidden message, you have the following options:
 
-- **Data compaction level**: This is a number from 1 to 8 that controls how many bits per byte of each pixel we will "
-  steal" for embedding the secret message. Lower values will have less visual effect on the container image, but the
+- **Data compaction level**: This is a number from 1 to 8 that controls how many bits per byte of each pixel we will
+  "steal" for embedding the secret message. Lower values will have less visual effect on the container image, but the
   storage space will be more limited. Higher values allow you to embed a larger secret message, but the results will be
   more visually obvious. A compaction level of 8 will completely destroy the pixels of the container image, resulting in
   an image that appears corrupt. A value of 1 is the safest option, as the visual effect will be extremely small. As you
