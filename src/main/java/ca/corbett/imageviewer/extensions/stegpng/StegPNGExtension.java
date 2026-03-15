@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * a PNG container image, without making it visually obvious that the image has been tampered with.
  * This was a fun academic project long ago, and I thought it would make for a neat extension to
  * ImageViewer. It is not intended for any practical use, and is really just a fun demonstration of
- * steganographic techniques. StegPNG does not come with any warrantee, nor guarantee of applicability
+ * steganographic techniques. StegPNG does not come with any warranty, nor guarantee of applicability
  * for any particular purpose. It is not intended for serious use - more of an academic exercise.
  *
  * @author <a href="https://github.com/scorbo2">scorbo2</a>
