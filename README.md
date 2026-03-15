@@ -34,7 +34,9 @@ those who know how to extract the hidden message. This is the essence of stegano
 
 It turns out that we can do something very similar with certain lossless image formats, like PNG.
 By modifying the least significant bits of the pixel data, we can embed a message into a PNG image without
-visually altering the image. The message can be extracted later by someone who knows how it was embedded.
+visually altering the image. This means that we make very small changes to each pixel, in such a way that the
+human eye will not easily spot the difference. So, the container image looks almost exactly as it did before,
+but the secret embedded message can be extracted by someone who knows how it was embedded.
 
 ### "But why not jpeg?"
 
@@ -53,6 +55,11 @@ to install it automatically. To do this, open the ExtensionManager dialog from t
 go to the "Available" tab. You should see "StegPNG" in the list of available extensions:
 
 ![Extension manager](extension_manager.jpg "Extension manager")
+
+Click "install" in the top right, and the application will download and install the extension for you. You will
+be prompted to restart the application. If you decide later to remove the extension, then just revisit the extension
+manager dialog, select "StegPNG" from the list on the left, and click "uninstall" in the top right.
+The application will again prompt to restart, and StegPNG will be gone.
 
 ### Option 2: manual download and install
 
