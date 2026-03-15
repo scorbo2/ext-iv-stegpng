@@ -196,7 +196,7 @@ public class StegPNGDialog extends JDialog {
             }
             else { // Binary contents
                 JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 fileChooser.setApproveButtonText("Embed");
                 fileChooser.showOpenDialog(this);
                 if (fileChooser.getSelectedFile() == null) {
