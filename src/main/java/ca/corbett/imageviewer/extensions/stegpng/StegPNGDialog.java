@@ -124,6 +124,10 @@ public class StegPNGDialog extends JDialog {
 
         int index = sourceHeader != null ? sourceHeader.getPayloadType().ordinal() : 0;
         payloadTypeField = new ComboField<>("Payload type:", Arrays.asList(PayloadType.values()), index);
+        if (sourceHeader != null) {
+            // In read-only mode for an existing payload, prevent changing the payload type.
+            payloadTypeField.setEnabled(false);
+        }
         formPanel.add(payloadTypeField);
 
         payloadSizeField = new LabelField("Payload size:",
