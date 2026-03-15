@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * This is the utility class containing methods for steganographic
@@ -131,14 +132,10 @@ public final class StegPNG {
         }
 
         // Get this file's contents:
-        byte[] fileData;
-        try (BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(secretMessageFile))) {
-            fileData = new byte[(int)secretMessageFile.length()];
-            int bytesRead = inStream.read(fileData);
-            if (bytesRead != fileData.length) {
-                throw new IOException("Could not read the entire file: " + secretMessageFile.getAbsolutePath());
-            }
+        if (secretMessageFile.length() > Integer.MAX_VALUE) {
+            throw new IOException("Secret message file is too large to be processed: " + secretMessageFile.getAbsolutePath());
         }
+        byte[] fileData = Files.readAllBytes(secretMessageFile.toPath());
 
         // Embed this message and return:
         return embedSecretMessage(containerImage, fileData, PayloadType.BINARY);
