@@ -332,8 +332,11 @@ public final class StegPNG {
         }
 
         // Create a new, blank image:
+        int imageType = containerImage.getColorModel().hasAlpha()
+                ? BufferedImage.TYPE_INT_ARGB
+                : BufferedImage.TYPE_INT_RGB;
         BufferedImage stegImage = new BufferedImage(containerImage.getWidth(),
-                                                    containerImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+                                                    containerImage.getHeight(), imageType);
 
         // Copy the container image data to the new image:
         Graphics2D g = stegImage.createGraphics();
