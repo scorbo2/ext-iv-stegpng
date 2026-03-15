@@ -127,7 +127,7 @@ message". If the payload type is STRING, you will be shown the hidden message in
 
 If the payload type is BINARY, you will see a file chooser, asking you where you wish to save the extracted message.
 
-There is currently no way to "un-steg" an image once a message has been embedded. Note that when you okay this
+There is currently no way to "un-steg" an image once a message has been embedded. Note that when you click OK in this
 dialog, you will be prompted to confirm that you wish to overwrite the source image with the new stegged version.
 If you cancel the dialog, the source image will be left unmodified.
 
