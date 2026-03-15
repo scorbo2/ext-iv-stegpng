@@ -1,9 +1,9 @@
 package ca.corbett.imageviewer.extensions.stegpng;
 
 
+import ca.corbett.extras.image.ImageUtil;
 import ca.corbett.extras.io.FileSystemUtil;
 
-import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
@@ -162,7 +162,10 @@ public final class StegPNG {
         }
         BufferedImage containerImage = null;
         try {
-            containerImage = ImageIO.read(inputImage);
+            containerImage = ImageUtil.loadImage(inputImage);
+            if (containerImage == null) {
+                throw new IOException("Could not read an image from the file: " + inputImage.getAbsolutePath());
+            }
             return getStegInfo(containerImage);
         }
         finally {
