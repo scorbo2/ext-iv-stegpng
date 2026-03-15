@@ -1,9 +1,15 @@
 package ca.corbett.imageviewer.extensions.stegpng;
 
 import ca.corbett.extensions.AppExtensionInfo;
+import ca.corbett.extras.EnhancedAction;
+import ca.corbett.extras.io.KeyStrokeManager;
 import ca.corbett.extras.properties.AbstractProperty;
+import ca.corbett.extras.properties.KeyStrokeProperty;
+import ca.corbett.imageviewer.AppConfig;
 import ca.corbett.imageviewer.extensions.ImageViewerExtension;
+import ca.corbett.imageviewer.ui.MainWindow;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,15 +29,17 @@ public class StegPNGExtension extends ImageViewerExtension {
 
     private static final Logger log = Logger.getLogger(StegPNGExtension.class.getName());
     private static final String extInfoLocation = "/ca/corbett/imageviewer/extensions/stegpng/extInfo.json";
+    private static final String KEY_PROP = AppConfig.KEYSTROKE_MISC_PREFIX + "stegPNG";
 
     private final AppExtensionInfo extInfo;
+    private final StegPNGAction stegAction;
 
     public StegPNGExtension() {
         extInfo = AppExtensionInfo.fromExtensionJar(getClass(), extInfoLocation);
         if (extInfo == null) {
             throw new RuntimeException("StegPNGExtension: can't parse extInfo.json!");
         }
-
+        this.stegAction = new StegPNGAction();
     }
 
     @Override
@@ -51,13 +59,37 @@ public class StegPNGExtension extends ImageViewerExtension {
 
     @Override
     protected List<AbstractProperty> createConfigProperties() {
-        // TODO a keyboard shortcut for launching our dialog would be nice.
-        // TODO any other general options?
-        return List.of();
+        List<AbstractProperty> props = new ArrayList<>();
+        props.add(new KeyStrokeProperty(KEY_PROP,
+                                        "StegPNG:",
+                                        KeyStrokeManager.parseKeyStroke("Ctrl+Alt+S"),
+                                        stegAction)
+                          .setAllowBlank(true)
+                          .setReservedKeyStrokes(AppConfig.RESERVED_KEYSTROKES)
+                          .setHelpText("Show the StegPNG dialog for the current image"));
+        return props;
     }
 
     @Override
     protected void loadJarResources() {
         // Nothing to load here yet.
+    }
+
+    @Override
+    public List<EnhancedAction> getMenuActions(String menu, MainWindow.BrowseMode browseMode) {
+        if (!"Edit".equals(menu)) {
+            return null;
+        }
+
+        List<EnhancedAction> actions = new ArrayList<>();
+        actions.add(stegAction);
+        return actions;
+    }
+
+    @Override
+    public List<EnhancedAction> getPopupMenuActions(MainWindow.BrowseMode browseMode) {
+        List<EnhancedAction> items = new ArrayList<>();
+        items.add(stegAction);
+        return items;
     }
 }

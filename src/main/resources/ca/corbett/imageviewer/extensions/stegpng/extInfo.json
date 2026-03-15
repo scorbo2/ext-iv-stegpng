@@ -5,5 +5,8 @@
   "targetAppName": "ImageViewer",
   "targetAppVersion": "3.0",
   "shortDescription": "Allows steganographic encoding and decoding of PNG images.",
-  "longDescription": "StegPNG allows steganographic encoding of messages into PNG container images. This ImageViewer extension is a straight port of the old standalone StegPNG application."
+  "longDescription": "StegPNG allows steganographic encoding of messages into PNG container images. This ImageViewer extension is a straight port of the old standalone StegPNG application.",
+  "customFields": {
+    "Keyboard shortcut": "Default: Ctrl+Alt+S - change in application settings."
+  }
 }

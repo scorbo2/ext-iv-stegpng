@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import javax.imageio.ImageIO;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -40,6 +43,23 @@ class StegPNGTest {
         File output = tempDir.resolve("roundtrip-default.txt").toFile();
         stegPNG.retrieveSecretMessage(stegged, output);
         assertEquals(secret, Files.readString(output.toPath()));
+    }
+
+    @Test
+    void isSteggedImage_shouldReportCorrectly() throws Exception {
+        BufferedImage container = createContainerImage(150, 150);
+        assertFalse(StegPNG.isSteggedImage(container));
+        BufferedImage stegged = new StegPNG().embedSecretMessage(container, "hi there");
+        assertTrue(StegPNG.isSteggedImage(stegged));
+        Graphics2D g = stegged.createGraphics();
+        try {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, 10, 10);
+        }
+        finally {
+            g.dispose();
+        }
+        assertFalse(StegPNG.isSteggedImage(stegged), "Modifying the image should have destroyed our header");
     }
 
     @Test

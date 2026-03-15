@@ -160,6 +160,14 @@ public class StegInfo {
     }
 
     /**
+     * Returns a user-presentable String version of our two version properties,
+     * in the form of "MAJOR.MINOR" (example: "1.0").
+     */
+    public String getVersionString() {
+        return majorVersion + "." + minorVersion;
+    }
+
+    /**
      * Returns the length of the data segment (this is the length,
      * in bytes, of the secret message). Note: we use a 32 bit int
      * instead of a 64 bit long, only because it's very unlikely that

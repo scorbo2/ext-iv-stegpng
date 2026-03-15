@@ -16,6 +16,21 @@ import java.io.IOException;
 /**
  * This is the utility class containing methods for steganographic
  * encoding and decoding of messages into container PNG images.
+ * <p>
+ *     Note that steganography does not equal cryptography!
+ *     There is no "password", no key, no encryption.
+ *     Steganography involves embedding one message inside
+ *     another message in such a way that it is not visually obvious that the
+ *     container message contains a hidden payload at all.
+ *     Steganography can be combined with cryptography, to add
+ *     an extra layer of security, but StegPNG does not directly
+ *     support this. By default, anyone with access to StegPNG
+ *     can effortlessly identify and extract the hidden payload
+ *     from any StegPNG-encoded container image. Again, this
+ *     is just an academic demonstration! StegPNG is not intended
+ *     for serious use. No warrantee or guarantee of applicability
+ *     for any particular purpose is implied or expressly granted.
+ * </p>
  *
  * @author <a href="https://github.com/scorbo2">scorbo2</a>
  * @since 2004-10-17 originally! But not updated for over two decades, until 2026-03-14.
@@ -158,6 +173,24 @@ public final class StegPNG {
         }
     }
 
+    /**
+     * Analyzes the candidate containerImage and reports whether it contains a valid
+     * StegPNG header. The payload itself is not inspected - this method simply reports
+     * whether it is likely that the containerImage contains a steganographically encoded message.
+     *
+     * @param containerImage The candidate container image to inspect.
+     * @return true if the containerImage appears to contain a valid StegPNG header, false otherwise.
+     */
+    public static boolean isSteggedImage(BufferedImage containerImage) {
+        try {
+            new StegPNG().getStegInfo(containerImage);
+            return true;
+        }
+        catch (InvalidVersionException | InvalidPayloadException | IllegalArgumentException e) {
+            // If literally anything goes wrong, we will assume that this is not a stegged image.
+            return false;
+        }
+    }
 
     /**
      * Attempts to parse a StegInfo object from the given file.
@@ -215,6 +248,35 @@ public final class StegPNG {
         }
     }
 
+    /**
+     * Assuming that the payload type is a String, this method will retrieve the contents
+     * and return it as a String. Warning: if your payload type assumption is incorrect,
+     * then you will receive an InvalidPayloadException.
+     *
+     * @param steggedImage The container image containing the secret.
+     * @return The secret message as a String.
+     * @throws InvalidVersionException  if the version information in the header is not recognized.
+     * @throws InvalidPayloadException  if the StegPNG header information looks wonky, or if the payload type is wrong.
+     * @throws IllegalArgumentException if the given steggedImage is null.
+     */
+    public String retrieveSecretMessageAsString(BufferedImage steggedImage)
+            throws InvalidVersionException, InvalidPayloadException {
+        if (steggedImage == null) {
+            throw new IllegalArgumentException("Stegged image cannot be null.");
+        }
+
+        // Parse the header (this will validate the header and throw if it looks wonky):
+        StegInfo stegInfo = readStegHeader(steggedImage);
+
+        // Ensure the payload type is String:
+        if (stegInfo.getPayloadType() != PayloadType.STRING) {
+            throw new InvalidPayloadException("Expected a STRING payload, but found: " + stegInfo.getPayloadType());
+        }
+
+        // Now we can retrieve it:
+        byte[] secretMessage = readStegData(steggedImage, stegInfo);
+        return convertByteArrayToString(secretMessage);
+    }
 
     /**
      * Returns the total amount of secret data, in bytes, that can
@@ -230,7 +292,7 @@ public final class StegPNG {
         if (candidateImage == null) {
             throw new IllegalArgumentException("Candidate image cannot be null.");
         }
-        
+
         // Pixels reserved for the header (always written at compaction level 1):
         int headerPixels = (int)Math.ceil(StegInfo.HEADER_SIZE * 8 / 3.0); // = 27
 
@@ -455,7 +517,6 @@ public final class StegPNG {
 
         // Loop for every byte of data:
         for (byte thisData : secretMessage) {
-            // Get current byte:
             // Loop for every bit of this byte:
             for (int sourceBitIndex = 0; sourceBitIndex < 8; sourceBitIndex++) {
                 // Parse the current pixel into components:
