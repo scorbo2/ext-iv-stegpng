@@ -2,7 +2,9 @@ package ca.corbett.imageviewer.extensions.stegpng;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Comprehensive unit tests for {@link StegInfo}.
@@ -61,6 +63,18 @@ class StegInfoTest {
     }
 
     @Test
+    void paramConstructor_oddMessageLength_shouldThrow() {
+        assertThrows(IllegalArgumentException.class,
+                     () -> new StegInfo((byte)1, PayloadType.STRING, 3));
+    }
+
+    @Test
+    void paramConstructor_negativeMessageLength_shouldThrow() {
+        assertThrows(IllegalArgumentException.class,
+                     () -> new StegInfo((byte)1, PayloadType.STRING, -2));
+    }
+
+    @Test
     void paramConstructor_validBinaryPayload_succeeds() {
         StegInfo info = new StegInfo((byte) 4, PayloadType.BINARY, 512);
 
@@ -71,7 +85,7 @@ class StegInfoTest {
 
     @Test
     void paramConstructor_compactionLevelMin_succeeds() {
-        assertDoesNotThrow(() -> new StegInfo((byte) 1, PayloadType.STRING, 1));
+        assertDoesNotThrow(() -> new StegInfo((byte)1, PayloadType.STRING, 2));
     }
 
     @Test
@@ -307,7 +321,7 @@ class StegInfoTest {
 
     @Test
     void roundTrip_stringPayload_preservesAllFields() throws Exception {
-        StegInfo original = new StegInfo((byte) 2, PayloadType.STRING, 999);
+        StegInfo original = new StegInfo((byte)2, PayloadType.STRING, 1000);
         StegInfo restored = new StegInfo(original.toByteArray());
 
         assertEquals(original.getMajorVersion(),        restored.getMajorVersion());
@@ -350,10 +364,10 @@ class StegInfoTest {
 
     @Test
     void roundTrip_minimumDataSegmentLength_preserved() throws Exception {
-        StegInfo original = new StegInfo((byte) 1, PayloadType.STRING, 1);
+        StegInfo original = new StegInfo((byte)1, PayloadType.STRING, 2);
         StegInfo restored = new StegInfo(original.toByteArray());
 
-        assertEquals(1, restored.getDataSegmentLength());
+        assertEquals(2, restored.getDataSegmentLength());
     }
 
     // =========================================================================
@@ -362,7 +376,7 @@ class StegInfoTest {
 
     @Test
     void getters_reflectCurrentVersionConstants() {
-        StegInfo info = new StegInfo((byte) 1, PayloadType.STRING, 1);
+        StegInfo info = new StegInfo((byte)1, PayloadType.STRING, 2);
 
         assertEquals(StegPNG.MAJOR_VERSION, info.getMajorVersion());
         assertEquals(StegPNG.MINOR_VERSION, info.getMinorVersion());
@@ -370,7 +384,7 @@ class StegInfoTest {
 
     @Test
     void getPayloadType_returnsString() {
-        StegInfo info = new StegInfo((byte) 1, PayloadType.STRING, 1);
+        StegInfo info = new StegInfo((byte)1, PayloadType.STRING, 2);
         assertEquals(PayloadType.STRING, info.getPayloadType());
     }
 
@@ -390,9 +404,9 @@ class StegInfoTest {
 
     @Test
     void getDataSegmentLength_returnsSuppliedLength() {
-        int[] lengths = {1, 100, 1024, 1_000_000, Integer.MAX_VALUE};
+        int[] lengths = {2, 100, 1024, 1_000_000, Integer.MAX_VALUE};
         for (int length : lengths) {
-            StegInfo info = new StegInfo((byte) 1, PayloadType.STRING, length);
+            StegInfo info = new StegInfo((byte)1, PayloadType.BINARY, length);
             assertEquals(length, info.getDataSegmentLength(),
                     "Expected data segment length " + length);
         }

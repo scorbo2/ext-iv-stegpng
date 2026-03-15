@@ -118,6 +118,15 @@ class StegPNGTest {
     }
 
     @Test
+    void getAvailableStorageSpace_verySmallImage_hasNoCapacity() {
+        BufferedImage tiny = createContainerImage(5, 5);
+        StegPNG stegPNG = new StegPNG(1);
+
+        int capacity = stegPNG.getAvailableStorageSpace(tiny);
+        assertEquals(0, capacity);
+    }
+
+    @Test
     void embedSecretMessage_stringNullContainer_throwsIllegalArgumentException() {
         StegPNG stegPNG = new StegPNG();
         assertThrows(IllegalArgumentException.class, () -> stegPNG.embedSecretMessage(null, "secret"));
