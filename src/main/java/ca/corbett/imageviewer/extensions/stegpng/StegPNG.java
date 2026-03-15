@@ -295,12 +295,26 @@ public final class StegPNG {
         // Pixels reserved for the header (always written at compaction level 1):
         int headerPixels = (int)Math.ceil(StegInfo.HEADER_SIZE * 8 / 3.0); // = 27
 
+        // Compute total pixels using long math to avoid overflow:
+        long totalPixels = (long) candidateImage.getWidth() * (long) candidateImage.getHeight();
+
         // The pixels we have available are all the ones not occupied by header bytes:
-        int availablePixels = candidateImage.getWidth() * candidateImage.getHeight() - headerPixels;
+        long availablePixels = totalPixels - headerPixels;
+        if (availablePixels <= 0L) {
+            // Image is too small to hold even the header; no storage space is available.
+            return 0;
+        }
 
         // Each pixel has three bytes we can work with, and we can use dataCompactionLevel
         // bits in each of those bytes, so the total number of bits we can use is:
-        return (availablePixels * 3 * dataCompactionLevel) / 8;
+        long totalBits = availablePixels * 3L * (long) dataCompactionLevel;
+        long totalBytes = totalBits / 8L;
+
+        // Clamp to Integer.MAX_VALUE to avoid overflow when returning as int:
+        if (totalBytes > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        }
+        return (int) totalBytes;
     }
 
     /**
