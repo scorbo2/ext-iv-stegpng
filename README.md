@@ -103,6 +103,20 @@ If the selected image does not already contain a hidden message, you have the fo
 
 ![Text input](text_prompt.png "Text input")
 
+#### Going too far - an extreme example
+
+Data compaction level 8 is only included to show what happens when you apply the algorithm too aggressively.
+Here's an example of what happens when you try to embed a message with compaction level 8:
+
+![Compaction level 8](extreme_example.png "Compaction level 8")
+
+A message of size 27MB was embedded into an image that had 34MB of available space. Notice that the top three quarters
+or so of the image data has been completely destroyed, and only the bottom portion is still intact. This is because
+the algorithm starts embedding at the top left of the image, and works slowly across each row, and down vertically
+from the top of the image towards the bottom. With data compaction level 8, it utterly destroys whatever image
+data was there before. It is now obvious that the image has been modified, and so we have defeated the purpose
+of the application. This is why compaction level 1 or 2 would be recommended for most use cases.
+
 ### Retrieving a message
 
 On the other hand, if the selected image already contains a hidden message, then the data compaction and payload type
