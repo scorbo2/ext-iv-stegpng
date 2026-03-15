@@ -54,6 +54,12 @@ public class StegInfo {
         if (payloadType == null) {
             throw new IllegalArgumentException("Payload type cannot be null.");
         }
+        if (messageLength <= 0) {
+            throw new IllegalArgumentException("Message length must be greater than 0.");
+        }
+        if (payloadType == PayloadType.STRING && (messageLength & 1) != 0) {
+            throw new IllegalArgumentException("Message length for STRING payloads must be even (2 bytes per character).");
+        }
         majorVersion = StegPNG.MAJOR_VERSION;
         minorVersion = StegPNG.MINOR_VERSION;
         dataCompactionLevel = compactionLevel;
