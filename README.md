@@ -131,6 +131,13 @@ There is currently no way to "un-steg" an image once a message has been embedded
 dialog, you will be prompted to confirm that you wish to overwrite the source image with the new stegged version.
 If you cancel the dialog, the source image will be left unmodified.
 
+### "Can I edit or compress the image after embedding a message?"
+
+No! Any change to the image pixel data may destroy the embedded message. The pixel data must be preserved
+exactly, otherwise the message may be lost. PNG was chosen as the preferred container format for this reason.
+Consider the hypothetical poetry example from earlier: if you re-word or edit the container message, the
+hidden message that it contains will be scrambled, or lost entirely. The same is true for the PNG container.
+
 ## Disclaimer
 
 StegPNG was an academic project that I wrote for fun back in 2004. It is not intended for serious use - more as
